@@ -13,8 +13,12 @@ import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.course_item.*
+import kotlinx.android.synthetic.main.course_item.imageCourse
 import kotlinx.android.synthetic.main.course_item.view.*
+import kotlinx.android.synthetic.main.course_item.view.imageCourse
 import java.text.FieldPosition
 import java.util.*
 import kotlin.collections.ArrayList
@@ -40,15 +44,28 @@ class MainActivity : AppCompatActivity() {
         list.adapter = adapter
         list.setOnItemClickListener { adapterView, view, position, id ->
             val course = data.get(position)
+            val imgPos = position%3+1
+            var image:Int
+            if(imgPos==1){
+                image = R.drawable.image10101
+            }
+            else if (imgPos==2){
+                image = R.drawable.image10102
+            }
+            else
+                image = R.drawable.image10103
 //            Log.d("Course Catalog","Course: ${course.title}")
-            displayDetail(course)
+            displayDetail(course,image)
         }
     }
-    private fun displayDetail(course: Course){
+    private fun displayDetail(course: Course,image: Int){
 //        Log.d("Course Catalog","Course: ${course.title}")
         val intent = Intent(this, DetailActivity::class.java)
         intent.putExtra("courseTitle",course.title)
         intent.putExtra("courseDesc",course.description)
+        intent.putExtra("courseNumber",course.courseNumber)
+        intent.putExtra("courseImage",image)
+        intent.putExtra("credits",course.credits)
         startActivity(intent)
 
     }
@@ -80,9 +97,12 @@ class MainActivity : AppCompatActivity() {
                 rowMain = convertView
 
             }
+            val imgPos = position%3+1
+            val res = context.resources.getIdentifier("image1010"+imgPos ,"drawable" ,context.packageName)
+
             val viewHolder = rowMain.tag as ViewHolder
-//            viewHolder.imageCourse.im
             viewHolder.titleText.text = objects[position].title
+            viewHolder.imageCourse.setImageResource(res)
 
             if ((position%2)==1){
                 rowMain.setBackgroundColor(greyColor)
@@ -97,7 +117,6 @@ class MainActivity : AppCompatActivity() {
 //                    rowMain.setAlpha(1.0F)
 //                })
 //            }
-
             return rowMain
         }
         private class ViewHolder(val imageCourse: ImageView, val titleText: TextView)
